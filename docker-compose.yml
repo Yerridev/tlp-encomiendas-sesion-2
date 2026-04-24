@@ -4,15 +4,27 @@ services:
   # Servicio de la app Django
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: sh -c "python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:8000"
     volumes:
-      - .:/app # monta el código en tiempo real
-    ports:
-      - "8000:8000"
+      - .:/app
+      - staticfiles:/app/staticfiles
+    expose:
+      - "8000"
     env_file:
-      - .env # variables de entorno
+      - .env
     depends_on:
       - db
+
+  # Servicio de Nginx
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - staticfiles:/app/staticfiles:ro
+    depends_on:
+      - web
 
   # Servicio de PostgreSQL
   db:
@@ -43,3 +55,4 @@ services:
 volumes:
   postgres_data:
   pgadmin_data:
+  staticfiles:
