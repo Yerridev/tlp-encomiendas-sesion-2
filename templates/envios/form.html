@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow">
+      <div class="card-header bg-white">
+        <h4 class="mb-0">{{ titulo }}</h4>
+      </div>
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          
+          <div class="mb-3">
+            <label for="{{ form.descripcion.id_for_label }}" class="form-label">{{ form.descripcion.label }}</label>
+            {{ form.descripcion }}
+            {% if form.descripcion.errors %}
+            <div class="text-danger small mt-1">{{ form.descripcion.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="{{ form.peso_kg.id_for_label }}" class="form-label">{{ form.peso_kg.label }}</label>
+                {{ form.peso_kg }}
+                {% if form.peso_kg.errors %}
+                <div class="text-danger small mt-1">{{ form.peso_kg.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="{{ form.volumen_cm3.id_for_label }}" class="form-label">{{ form.volumen_cm3.label }}</label>
+                {{ form.volumen_cm3 }}
+                {% if form.volumen_cm3.errors %}
+                <div class="text-danger small mt-1">{{ form.volumen_cm3.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="{{ form.remitente.id_for_label }}" class="form-label">{{ form.remitente.label }}</label>
+                {{ form.remitente }}
+                {% if form.remitente.errors %}
+                <div class="text-danger small mt-1">{{ form.remitente.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="{{ form.destinatario.id_for_label }}" class="form-label">{{ form.destinatario.label }}</label>
+                {{ form.destinatario }}
+                {% if form.destinatario.errors %}
+                <div class="text-danger small mt-1">{{ form.destinatario.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="{{ form.ruta.id_for_label }}" class="form-label">{{ form.ruta.label }}</label>
+            {{ form.ruta }}
+            {% if form.ruta.errors %}
+            <div class="text-danger small mt-1">{{ form.ruta.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="{{ form.costo_envio.id_for_label }}" class="form-label">{{ form.costo_envio.label }}</label>
+                {{ form.costo_envio }}
+                {% if form.costo_envio.errors %}
+                <div class="text-danger small mt-1">{{ form.costo_envio.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="{{ form.fecha_entrega_est.id_for_label }}" class="form-label">{{ form.fecha_entrega_est.label }}</label>
+                {{ form.fecha_entrega_est }}
+                {% if form.fecha_entrega_est.errors %}
+                <div class="text-danger small mt-1">{{ form.fecha_entrega_est.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="{{ form.observaciones.id_for_label }}" class="form-label">{{ form.observaciones.label }}</label>
+            {{ form.observaciones }}
+            {% if form.observaciones.errors %}
+            <div class="text-danger small mt-1">{{ form.observaciones.errors }}</div>
+            {% endif %}
+          </div>
+
+          {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+            {{ error }}
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <div class="d-flex justify-content-end">
+            <a href="{% url 'encomienda_lista' %}" class="btn btn-outline-secondary me-2">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-4">
+    <div class="card shadow">
+      <div class="card-header bg-white text-center">
+        <i class="fas fa-user-circle fa-4x text-muted"></i>
+        <h4 class="mt-3 mb-0">{{ user.username }}</h4>
+        <p class="text-muted">{{ user.email }}</p>
+      </div>
+      <div class="card-body">
+        {% if empleado %}
+        <dl class="row mb-0">
+          <dt class="col-sm-5">Código</dt>
+          <dd class="col-sm-7">{{ empleado.codigo }}</dd>
+          
+          <dt class="col-sm-5">Nombres</dt>
+          <dd class="col-sm-7">{{ empleado.nombres }}</dd>
+          
+          <dt class="col-sm-5">Apellidos</dt>
+          <dd class="col-sm-7">{{ empleado.apellidos }}</dd>
+          
+          <dt class="col-sm-5">Cargo</dt>
+          <dd class="col-sm-7">{{ empleado.get_cargo_display }}</dd>
+          
+          <dt class="col-sm-5">Estado</dt>
+          <dd class="col-sm-7">
+            {% if empleado.estado == 1 %}
+            <span class="badge bg-success">Activo</span>
+            {% else %}
+            <span class="badge bg-secondary">Inactivo</span>
+            {% endif %}
+          </dd>
+        </dl>
+        {% else %}
+        <div class="alert alert-warning">
+          <i class="fas fa-exclamation-triangle me-1"></i>
+          No perfil de empleado vinculado.
+        </div>
+        {% endif %}
+      </div>
+      <div class="card-footer bg-white">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary w-100">
+          <i class="fas fa-arrow-left me-1"></i>Volver
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card shadow">
+      <div class="card-header bg-white">
+        <h5 class="mb-0">Información del sistema</h5>
+      </div>
+      <div class="card-body">
+        <p>Bienvenido al <strong>Sistema de Gestión de Encomiendas</strong>.</p>
+        <p>Desde este panel puedes:</p>
+        <ul>
+          <li>Ver el dashboard con estadísticas</li>
+          <li>Lista y buscar encomiendas</li>
+          <li>Registrar nuevas encomiendas</li>
+          <li>Cambiar el estado de las encomiendas</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
