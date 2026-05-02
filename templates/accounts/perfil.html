@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-
 {% block title %}Mi Perfil{% endblock %}
-
 {% block content %}
 <div class="row">
   <div class="col-md-4">
@@ -16,16 +14,16 @@
         <dl class="row mb-0">
           <dt class="col-sm-5">Código</dt>
           <dd class="col-sm-7">{{ empleado.codigo }}</dd>
-          
+
           <dt class="col-sm-5">Nombres</dt>
           <dd class="col-sm-7">{{ empleado.nombres }}</dd>
-          
+
           <dt class="col-sm-5">Apellidos</dt>
           <dd class="col-sm-7">{{ empleado.apellidos }}</dd>
-          
+
           <dt class="col-sm-5">Cargo</dt>
           <dd class="col-sm-7">{{ empleado.get_cargo_display }}</dd>
-          
+
           <dt class="col-sm-5">Estado</dt>
           <dd class="col-sm-7">
             {% if empleado.estado == 1 %}

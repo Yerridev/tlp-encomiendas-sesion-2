@@ -6,20 +6,20 @@ class EncomiendaQuerySet(models.QuerySet):
 
     # ── Filtros por estado ───────────────────────────
     def pendientes(self):
-        return self.filter(estado='PE')
+        return self.filter(estado="PE")
 
     def en_transito(self):
-        return self.filter(estado='TR')
+        return self.filter(estado="TR")
 
     def entregadas(self):
-        return self.filter(estado='EN')
+        return self.filter(estado="EN")
 
     def devueltas(self):
-        return self.filter(estado='DV')
+        return self.filter(estado="DV")
 
     def activas(self):
         """Pendientes + en tránsito + en destino"""
-        return self.filter(estado__in=['PE', 'TR', 'DE'])
+        return self.filter(estado__in=["PE", "TR", "DE"])
 
     # ── Filtros compuestos ─────────────────────────
     def por_ruta(self, ruta):
@@ -37,18 +37,13 @@ class EncomiendaQuerySet(models.QuerySet):
     # ── Con retraso ────────────────────────────
     def con_retraso(self):
         """Encomiendas activas cuya fecha estimada ya pasó"""
-        return self.activas().filter(
-            fecha_entrega_est__lt=timezone.now().date()
-        )
+        return self.activas().filter(fecha_entrega_est__lt=timezone.now().date())
 
     # ── Optimización de consultas ──────────────────
     def con_relaciones(self):
         """Evita problema N+1"""
         return self.select_related(
-            'remitente',
-            'destinatario',
-            'ruta',
-            'empleado_registro'
+            "remitente", "destinatario", "ruta", "empleado_registro"
         )
 
 
@@ -61,14 +56,14 @@ class ClienteQuerySet(models.QuerySet):
         return self.filter(estado=9)
 
     def con_dni(self):
-        return self.filter(tipo_doc='DNI')
+        return self.filter(tipo_doc="DNI")
 
     def buscar(self, termino):
         """Búsqueda por nombre, apellido o documento"""
         return self.filter(
-            models.Q(nombres__icontains=termino) |
-            models.Q(apellidos__icontains=termino) |
-            models.Q(nro_doc__icontains=termino)
+            models.Q(nombres__icontains=termino)
+            | models.Q(apellidos__icontains=termino)
+            | models.Q(nro_doc__icontains=termino)
         )
 
 

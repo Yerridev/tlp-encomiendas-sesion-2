@@ -2,6 +2,7 @@ from django.db import models
 from config.choices import EstadoGeneral
 from envios.querysets import RutaQuerySet
 
+
 # Create your models here.
 class Ruta(models.Model):
     objects = RutaQuerySet.as_manager()
@@ -13,14 +14,14 @@ class Ruta(models.Model):
     precio_base = models.DecimalField(max_digits=10, decimal_places=2)
     dias_entrega = models.PositiveIntegerField(default=1)
     estado = models.IntegerField(
-    choices=EstadoGeneral.choices,
-    default=EstadoGeneral.ACTIVO
+        choices=EstadoGeneral.choices, default=EstadoGeneral.ACTIVO
     )
 
     def __str__(self):
-        return f'{self.codigo}: {self.origen} → {self.destino}'
+        return f"{self.codigo}: {self.origen} → {self.destino}"
+
     class Meta:
-        db_table = 'rutas'
-        verbose_name = 'Ruta'
-        verbose_name_plural = 'Rutas'
-        ordering = ['origen', 'destino']
+        db_table = "rutas"
+        verbose_name = "Ruta"
+        verbose_name_plural = "Rutas"
+        ordering = ["origen", "destino"]

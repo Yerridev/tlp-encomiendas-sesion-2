@@ -4,16 +4,19 @@ services:
   # Servicio de la app Django
   web:
     build: .
-    command: sh -c "python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+    command: sh /app/entrypoint.sh
     volumes:
       - .:/app
       - staticfiles:/app/staticfiles
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     env_file:
       - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   # Servicio de Nginx
   nginx:
@@ -37,6 +40,11 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   # Servicio de pgAdmin
   pgadmin:

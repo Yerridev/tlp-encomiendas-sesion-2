@@ -11,7 +11,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from .models import Encomienda, Empleado, HistorialEstado
 from config.choices import EstadoEnvio
-from .forms import EncomiendaForm
+from .forms import EncomiendaForm, CambioEstadoForm
 
 
 def login_view(request):
@@ -60,9 +60,11 @@ def dashboard(request):
     try:
         hoy = timezone.now().date()
         context = {
-            'total_activas': Encomienda.objects.activas().count(),
+            'pendientes': Encomienda.objects.pendientes().count(),
             'en_transito': Encomienda.objects.en_transito().count(),
+            'en_destino': Encomienda.objects.filter(estado=EstadoEnvio.EN_DESTINO).count(),
             'con_retraso': Encomienda.objects.con_retraso().count(),
+            'entregadas': Encomienda.objects.filter(estado=EstadoEnvio.ENTREGADO).count(),
             'entregadas_hoy': Encomienda.objects.filter(
                 estado=EstadoEnvio.ENTREGADO,
                 fecha_entrega_real=hoy
@@ -71,9 +73,11 @@ def dashboard(request):
         }
     except Exception as e:
         context = {
-            'total_activas': 0,
+            'pendientes': 0,
             'en_transito': 0,
+            'en_destino': 0,
             'con_retraso': 0,
+            'entregadas': 0,
             'entregadas_hoy': 0,
             'ultimas': [],
             'error': str(e)
@@ -112,9 +116,11 @@ def encomienda_lista(request):
 def encomienda_detalle(request, pk):
     enc = get_object_or_404(Encomienda.objects.con_relaciones(), pk=pk)
     historial = enc.historial.select_related('empleado').all()
+    cambio_estado_form = CambioEstadoForm(initial={"estado_nuevo": enc.estado})
     return render(request, 'envios/detalle.html', {
         'encomienda': enc,
         'historial': historial,
+        'cambio_estado_form': cambio_estado_form,
     })
 
 
@@ -141,13 +147,19 @@ def encomienda_crear(request):
 @require_POST
 def encomienda_cambiar_estado(request, pk):
     enc = get_object_or_404(Encomienda, pk=pk)
-    nuevo_estado = request.POST.get('estado')
-    observacion = request.POST.get('observacion', '')
+    form = CambioEstadoForm(request.POST)
+    nuevo_estado = None
+    observacion = ''
     try:
         empleado = Empleado.objects.get(email=request.user.email)
-        enc.cambiar_estado(nuevo_estado, empleado, observacion)
-        messages.success(request, 'Estado actualizado correctamente.')
-    except ValueError as e:
+        if form.is_valid():
+            nuevo_estado = form.cleaned_data['estado_nuevo']
+            observacion = form.cleaned_data.get('observacion', '')
+            enc.cambiar_estado(nuevo_estado, empleado, observacion)
+            messages.success(request, 'Estado actualizado correctamente.')
+            return redirect('encomienda_detalle', pk=pk)
+        raise ValueError('Formulario inválido.')
+    except (ValueError, Empleado.DoesNotExist) as e:
         messages.error(request, str(e))
     return redirect('encomienda_detalle', pk=pk)
 
