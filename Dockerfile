@@ -1,17 +1,17 @@
-# ─INSTRUCCION 1: imagen base 
+# ─INSTRUCCION 1: imagen base
 FROM python:3.11-slim
 
 # 'slim' = imagen minima sin herramientas extra (mas liviana)
-# ── INSTRUCCION 2: variables de entorno 
-ENV PYTHONDONTWRITEBYTECODE=1 
-ENV PYTHONUNBUFFERED=1 
+# ── INSTRUCCION 2: variables de entorno
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# ── INSTRUCCION 3: directorio de trabajo 
+# ── INSTRUCCION 3: directorio de trabajo
 WORKDIR /app
 
 # Todos los comandos siguientes se ejecutan desde /app
 
-# ── INSTRUCCION 4: instalar dependencias 
+# ── INSTRUCCION 4: instalar dependencias
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 # Copiamos solo requirements.txt primero para aprovechar el cache
@@ -23,7 +23,5 @@ COPY . .
 EXPOSE 8000
 # Documentacion: el contenedor escucha en el puerto 8000.
 # No lo publica automaticamente; eso lo hace -p en docker run.
-# ── INSTRUCCION 7: comando de inicio ────────────────────────────────
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-
-
+# ── INSTRUCCION 7: comando de inicio ───────────────────────────────
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "config.asgi:application"]

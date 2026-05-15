@@ -128,6 +128,11 @@ REST_FRAMEWORK = {
         'login_attempt': '5/min',
     },
     'EXCEPTION_HANDLER': 'api.exceptions.encomiendas_exception_handler',
+    # ── Versionamiento por URL (/api/v1/ y /api/v2/) ──────────────────
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
+    'DEFAULT_VERSION': 'v1',
+    'ALLOWED_VERSIONS': ['v1', 'v2'],
+    'VERSION_PARAM': 'version',
 }
 
 # ── JWT ────────────────────────────────────────────────────────────────
@@ -178,3 +183,12 @@ SPECTACULAR_SETTINGS = {
 #     }
 # }
 # CACHE_TTL = 60 * 15  # 15 minutos
+
+# ── Django Channels ─────────────────────────────────────────────────────
+ASGI_APPLICATION = 'config.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}

@@ -11,7 +11,7 @@ class EncomiendaForm(forms.ModelForm):
         fields = [
             'descripcion', 'peso_kg', 'volumen_cm3',
             'remitente', 'destinatario', 'ruta',
-            'costo_envio', 'fecha_entrega_est', 'observaciones',
+            'observaciones',
         ]
         widgets = {
             'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),

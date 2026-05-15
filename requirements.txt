@@ -5,8 +5,12 @@ python-decouple==3.8
 sqlparse==0.5.5
 tzdata==2026.1
 gunicorn
+daphne
 djangorestframework
 djangorestframework-simplejwt
 django-filter
 drf-spectacular
 django-cors-headers
+channels==4.0.0
+channels-redis==4.1.0
+httpx

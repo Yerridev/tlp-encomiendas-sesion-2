@@ -129,6 +129,29 @@ class Encomienda(models.Model):
             raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
+        import uuid
+        from datetime import timedelta
+        from decimal import Decimal
+
+        if not self.codigo:
+            self.codigo = f'ENC-{timezone.now().strftime("%Y%m%d")}-{str(uuid.uuid4())[:6].upper()}'
+
+        if not self.fecha_entrega_est and self.ruta_id:
+            self.fecha_entrega_est = timezone.now().date() + timedelta(days=self.ruta.dias_entrega)
+
+        if not self.costo_envio and self.ruta_id:
+            costo = self.calcular_costo()
+            self.costo_envio = Decimal(str(costo))
+
+        if self.pk:
+            try:
+                anterior = Encomienda.objects.get(pk=self.pk)
+                self._estado_anterior = anterior.estado
+            except Encomienda.DoesNotExist:
+                self._estado_anterior = None
+        else:
+            self._estado_anterior = None
+
         self.full_clean()
         super().save(*args, **kwargs)
 
@@ -181,8 +204,9 @@ class Encomienda(models.Model):
         return self
 
     def calcular_costo(self):
-        PRECIO_POR_KG_EXTRA = 2.50
-        PESO_BASE = 5.0
+        from decimal import Decimal
+        PRECIO_POR_KG_EXTRA = Decimal('2.50')
+        PESO_BASE = Decimal('5.0')
 
         costo = self.ruta.precio_base
         if self.peso_kg > PESO_BASE:
